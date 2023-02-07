@@ -98,7 +98,7 @@ def transcribe(microphone, audio_file, model_name):
 
     try:
         print(['audio data try', audio_data])
-        # Use HF API for transcription
+        # Use NGC API for transcription need to switch to HF API
         sys.stdout.write("[INFO]  Transcribing...\n\n") 
         transcriptions = model.transcribe(paths2audio_files=[audio_data])
 
