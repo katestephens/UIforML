@@ -8,7 +8,8 @@ RUN apt-get update && \
 # Custom Configuration
 RUN pip install wget unidecode sox gradio pytube librosa soundfile && \
    pip install Cython && \
-   pip install nemo-toolkit['all']
+   pip install nemo-toolkit['all'] && \
+   pip install gradio --upgrade
 
 ENV PYTHONUNBUFFERED=1
 ENV GRADIO_SERVER_PORT=8983
