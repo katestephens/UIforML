@@ -16,7 +16,7 @@ preset_examples = [
     ('Instruction: given a dialog context, you need to response empathically.',
      '', 'What is the most interesing thing about our universe?', 'Chitchat'),
      ('Instruction: given a dialog context and related knowledge, you need to respond based on the knowledge.', 
-     '''Determined is an open-source deep learning training platform that makes building models fast and easy. Determined enables you to: Train models faster using state-of-the-art distributed training, without changing your model code, Automatically find high-quality models with advanced hyperparameter tuning from the creators of Hyperband, Get more from your GPUs with smart scheduling and cut cloud GPU costs by seamlessly using preemptible instances, Track and reproduce your work with experiment tracking that works out-of-the-box, covering code versions, metrics, checkpoints, and hyperparameters.  Determined integrates these features into an easy-to-use, high-performance deep learning environment — which means you can spend your time building models instead of managing infrastructure.  To use Determined, you can continue using popular DL frameworks such as TensorFlow and PyTorch; you just need to update your model code to integrate with the Determined API.
+     '''Determined is an open-source deep learning training platform that makes building models fast and easy. Determined enables you to: Train models faster using state-of-the-art distributed training, without changing your model code. Automatically find high-quality models with advanced hyperparameter tuning from the creators of Hyperband. Get more from your GPUs with smart scheduling and cut cloud GPU costs by seamlessly using preemptible instances. Track and reproduce your work with experiment tracking that works out-of-the-box, covering code versions, metrics, checkpoints, and hyperparameters.  Determined integrates these features into an easy-to-use, high-performance deep learning environment — which means you can spend your time building models instead of managing infrastructure.  To use Determined, you can continue using popular DL frameworks such as TensorFlow and PyTorch; you just need to update your model code to integrate with the Determined API. Determined was acquired by HPE in 2020.
      ''',
      'What is Determined?', 'Grounded Response Generation'
      ),
@@ -73,21 +73,20 @@ with gr.Blocks() as demo:
 
     dropdown = gr.Dropdown(
         [f"Example {i+1}" for i in range(5)], label='Examples')
-
-    radio = gr.Radio(
-        ["Conversational Question Answering", "Chitchat", "Grounded Response Generation"], label="Instruction Type", value='Conversational Question Answering'
-    )
-    instruction = gr.Textbox(lines=1, interactive=True, label="Instruction",
-                             value="Instruction: given a dialog context and related knowledge, you need to answer the question based on the knowledge.")
-    radio.change(fn=change_textbox, inputs=radio, outputs=instruction)
-    knowledge = gr.Textbox(lines=10, label="Knowledge")
-    query = gr.Textbox(lines=1, label="User Query")
-
-    dropdown.change(change_example, dropdown, [instruction, knowledge, query, radio])
-
     with gr.Row():
         with gr.Column(scale=1):
-            response = gr.Textbox(label="Response", lines=10)
+
+            radio = gr.Radio(
+                ["Q&A", "Chitchat", "Grounded Response Generation"], label="Instruction Type", value='Q&A'
+            )
+            instruction = gr.Textbox(lines=1, interactive=True, label="Instruction",
+                                    value="Instruction: given a dialog context and related knowledge, you need to answer the question based on the knowledge.")
+            radio.change(fn=change_textbox, inputs=radio, outputs=instruction)
+        with gr.Column(scale=2):
+            knowledge = gr.Textbox(lines=8, label="Knowledge")
+
+
+    with gr.Row():
 
         with gr.Column(scale=1):
             top_p = gr.Slider(0, 1, value=0.9, label='top_p')
@@ -95,8 +94,13 @@ with gr.Blocks() as demo:
             max_length = gr.Number(
                 500, label='max_length (should be larger than min_length)')
 
+        with gr.Column(scale=2):
+            response = gr.Textbox(label="Response", lines=6)
+            query = gr.Textbox(lines=1, label="User Query")
+
     greet_btn = gr.Button("Generate")
     greet_btn.click(fn=api_call_generation, inputs=[
                     instruction, knowledge, query, top_p, min_length, max_length], outputs=response)
+    dropdown.change(change_example, dropdown, [instruction, knowledge, query, radio])
 
 demo.launch()
