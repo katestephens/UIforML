@@ -8,9 +8,10 @@ from transformers import (
 tokenizer = AutoTokenizer.from_pretrained("microsoft/GODEL-v1_1-base-seq2seq")
 model = AutoModelForSeq2SeqLM.from_pretrained("microsoft/GODEL-v1_1-base-seq2seq")
 
+filepath = 'knowledge.txt'
 
-def get_knowledge():
-    with open('knowledge.txt', 'r') as file:
+def get_knowledge(filepath=filepath):
+    with open(filepath, 'r') as file:
         data = file.read().replace('\n', '')
     print(data)
     return data
