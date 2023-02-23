@@ -82,8 +82,6 @@ for info in hf_infos:
 
 SUPPORTED_MODEL_NAMES = sorted(list(SUPPORTED_MODEL_NAMES))
 
-# DEBUG FILTER
-# SUPPORTED_MODEL_NAMES = list(filter(lambda x: "en" in x and "conformer_transducer_large" in x, SUPPORTED_MODEL_NAMES))
 
 model_dict = {}
 for model_name in SUPPORTED_MODEL_NAMES:
@@ -91,12 +89,10 @@ for model_name in SUPPORTED_MODEL_NAMES:
         iface = gr.Interface.load(f'models/{model_name}')
         model_dict[model_name] = iface
 
-        # model_dict[model_name] = None
     except:
         pass
 
 if DEFAULT_EN_MODEL in model_dict:
-    # Preemptively load the default EN model
     if model_dict[DEFAULT_EN_MODEL] is None:
         model_dict[DEFAULT_EN_MODEL] = gr.Interface.load(f'models/{DEFAULT_EN_MODEL}')
 
@@ -110,7 +106,6 @@ for lang in SUPPORTED_LANGUAGES:
             else:
                 SUPPORTED_LANG_MODEL_DICT[lang].append(model_id)
 
-# Sort model names
 for lang in SUPPORTED_LANG_MODEL_DICT.keys():
     model_ids = SUPPORTED_LANG_MODEL_DICT[lang]
     model_ids = sorted(model_ids)
@@ -444,7 +439,7 @@ def transcribe(microphone, audio_file, model_name):
 
             audio_data = new_audio_data
 
-            # Use HF API for transcription
+            # Use HF API for transcription, we can use NGC instead if we want
             start = time.time()
             transcriptions = infer_audio(model_name, audio_data)
             end = time.time()
@@ -549,14 +544,6 @@ def yt_transcribe(yt_url: str, model_name: str):
 
 
 def create_lang_selector_component(default_en_model=DEFAULT_EN_MODEL):
-    """
-    Utility function to select a langauge from a dropdown menu, and simultanously update another dropdown
-    containing the corresponding model checkpoints for that language.
-    Args:
-        default_en_model: str name of a default english model that should be the set default.
-    Returns:
-        Gradio components for lang_selector (Dropdown menu) and models_in_lang (Dropdown menu)
-    """
     lang_selector = gr.components.Dropdown(
         choices=sorted(list(SUPPORTED_LANGUAGES)), value="en", type="value", label="Languages", interactive=True,
     )
@@ -580,9 +567,6 @@ def create_lang_selector_component(default_en_model=DEFAULT_EN_MODEL):
     return lang_selector, models_in_lang
 
 
-"""
-Define the GUI
-"""
 demo = gr.Blocks(title=TITLE, css=CSS)
 
 with demo:
@@ -600,13 +584,11 @@ with demo:
         transcript = gr.components.Label(label='Transcript')
         audio_html_output = gr.components.HTML()
 
-        run.click(
-            transcribe, inputs=[microphone, file_upload, models_in_lang], outputs=[transcript, audio_html_output]
-        )
+        run.click( transcribe, inputs=[microphone, file_upload, models_in_lang], outputs=[transcript, audio_html_output])
 
-    with gr.Tab("Transcribe Youtube"):
+    with gr.Tab("Transcribe YouTube"):
         yt_url = gr.components.Textbox(
-            lines=1, label="Youtube URL", placeholder="Paste the URL to a YouTube video here"
+            lines=1, label="YouTube URL", placeholder="Paste the URL to a YouTube video here"
         )
 
         lang_selector_yt, models_in_lang_yt = create_lang_selector_component(
@@ -620,9 +602,7 @@ with demo:
         transcript = gr.components.Label(label='Transcript')
         yt_html_output = gr.components.HTML()
 
-        run.click(
-            yt_transcribe, inputs=[yt_url, models_in_lang_yt], outputs=[transcript, embedded_video, yt_html_output]
-        )
+        run.click( yt_transcribe, inputs=[yt_url, models_in_lang_yt], outputs=[transcript, embedded_video, yt_html_output])
 
     gr.components.HTML(ARTICLE)
 
