@@ -44,7 +44,7 @@ with gr.Blocks() as demo:
     with gr.Row() as row:
         out = gr.Chatbot()
     with gr.Column() as col:
-        prompt = gr.Textbox(placeholder="Type your prompt here...", show_label=False).style(full_width=True)
+        prompt = gr.Textbox(placeholder="Type your prompt here...", show_label=False)
         prompt.submit(fn=chat, inputs=[prompt, prompt_state], outputs=[out, prompt_state], show_progress=True)
         with gr.Row() as interior_row:
             clear_btn = gr.Button(value="Clear")
