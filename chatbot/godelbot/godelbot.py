@@ -69,7 +69,7 @@ def change_textbox(choice):
         return gr.update(lines=1, visible=True, value="Instruction: given a dialog context and related knowledge, you need to answer the question based on the knowledge.")
 
 
-with gr.Blocks() as demo:
+with gr.Blocks(title="Godel Goal-Based Dialogue") as demo:
 
     dropdown = gr.Dropdown(
         [f"Example {i+1}" for i in range(5)], label='Examples')

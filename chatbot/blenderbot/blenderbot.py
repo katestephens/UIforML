@@ -39,7 +39,7 @@ def chat(message, history):
 def clear_prompt():
     return ""
 
-with gr.Blocks() as demo:
+with gr.Blocks(title="Blenderbot") as demo:
     prompt_state = gr.State([])
     with gr.Row() as row:
         out = gr.Chatbot()
@@ -48,7 +48,7 @@ with gr.Blocks() as demo:
         prompt.submit(fn=chat, inputs=[prompt, prompt_state], outputs=[out, prompt_state], show_progress=True)
         with gr.Row() as interior_row:
             clear_btn = gr.Button(value="Clear")
-            clear_btn.click(fn=clear_prompt, outputs=prompt)
+            clear_btn.click(fn=clear_prompt, inputs=prompt, outputs=prompt)
             submit_btn = gr.Button(value="Submit")
             submit_btn.click(fn=chat, inputs=[prompt, prompt_state], outputs=[out, prompt_state], show_progress=True)
 

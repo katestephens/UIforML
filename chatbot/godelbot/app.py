@@ -36,7 +36,7 @@ class GodelChatbot:
 
 godel_chatbot = GodelChatbot('microsoft/GODEL-v1_1-base-seq2seq')
 
-with gr.Blocks() as demo:
+with gr.Blocks(title="Godel Chatbot") as demo:
     prompt_state = gr.State([])
     with gr.Row():
         out = gr.Chatbot()
